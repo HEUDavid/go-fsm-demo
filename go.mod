@@ -6,6 +6,9 @@ require (
 	github.com/HEUDavid/go-fsm v0.0.0-20240708153133-11af8861d7bf
 	github.com/gin-gonic/gin v1.10.0
 )
+replace (
+	github.com/HEUDavid/go-fsm => /Users/xiang/workspace/goland/lib/go-fsm
+)
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
