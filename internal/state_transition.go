@@ -4,6 +4,11 @@ import (
 	. "github.com/HEUDavid/go-fsm/pkg/metadata"
 )
 
+var NEW = New{State: State{Name: "New", IsFinal: false}}
+var PAY = Pay{State: State{Name: "Pay", IsFinal: false}}
+
+var END = State{Name: "End", IsFinal: true}
+
 var New2Pay = Transition{From: NEW, To: PAY}
 var Pay2End = Transition{From: PAY, To: END}
 
