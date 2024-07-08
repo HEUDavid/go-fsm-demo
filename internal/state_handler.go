@@ -7,6 +7,12 @@ import (
 	"log"
 )
 
+var (
+	NEW = New{State: State{Name: "New", IsFinal: false}}
+	PAY = Pay{State: State{Name: "Pay", IsFinal: false}}
+	END = State{Name: "End", IsFinal: true}
+)
+
 type New struct{ State }
 
 func (s New) Handle(task *Task[ExtDataEntity]) error {

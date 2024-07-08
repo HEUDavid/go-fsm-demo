@@ -13,7 +13,6 @@ import (
 	"github.com/HEUDavid/go-fsm/pkg/util"
 	"github.com/gin-gonic/gin"
 	"log"
-
 	"strconv"
 	"sync"
 	"time"
