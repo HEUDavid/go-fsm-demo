@@ -13,16 +13,15 @@ func (s New) Handle(task *Task[ExtDataEntity]) error {
 	extData, _ := util.Assert[*MyExtData](task.ExtData)
 	log.Printf("State: %s, ExtData: %s", task.State, pkg.Pretty(extData))
 
-	extData.Symbol = "BNB"     // Update ExtData
-	task.State = PAY.GetName() // Switch to next state
+	extData.Comment = "Modified by state handler" // Update ExtData
+	task.State = PAY.GetName()                    // Switch to next state
 	return nil
 }
 
 type Pay struct{ State }
 
 func (s Pay) Handle(task *Task[ExtDataEntity]) error {
-	extData, _ := util.Assert[*MyExtData](task.ExtData)
-	log.Printf("State: %s, ExtData: %s", task.State, pkg.Pretty(extData))
+	log.Printf("State: %s, ExtData: %s", task.State, pkg.Pretty(task.GetExtData()))
 
 	// Invoke RPC interfaces to perform certain operations
 	// ...
