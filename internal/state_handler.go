@@ -8,7 +8,7 @@ import (
 )
 
 var NEW = New{State: State{Name: "New", IsFinal: false}}
-var PAY = New{State: State{Name: "Pay", IsFinal: false}}
+var PAY = Pay{State: State{Name: "Pay", IsFinal: false}}
 
 var END = State{Name: "End", IsFinal: true}
 
