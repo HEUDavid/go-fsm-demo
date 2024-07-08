@@ -1,0 +1,15 @@
+[mysql]
+user = "fsm_user"
+password = "123456"
+host = "api.mdavid.cn"
+port = 4306
+dbName = "fsm"
+maxIdleConns = 10
+maxOpenConns = 100
+
+[rmq]
+user = "guest"
+password = "guest"
+host = "api.mdavid.cn"
+port = 5672
+queue = "fsm"
