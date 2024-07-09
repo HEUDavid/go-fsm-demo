@@ -1,105 +1,36 @@
 package main
 
 import (
-	"context"
-	"github.com/HEUDavid/go-fsm-demo/internal"
-	. "github.com/HEUDavid/go-fsm-demo/internal/pkg"
+	. "github.com/HEUDavid/go-fsm-demo/internal"
 	"github.com/HEUDavid/go-fsm-demo/model"
-	"github.com/HEUDavid/go-fsm/pkg"
-	db "github.com/HEUDavid/go-fsm/pkg/db/mysql"
 	. "github.com/HEUDavid/go-fsm/pkg/metadata"
-	mq "github.com/HEUDavid/go-fsm/pkg/mq/rmq"
-	"github.com/HEUDavid/go-fsm/pkg/util"
 	"github.com/gin-gonic/gin"
 	"log"
+	"net/http"
 	"strconv"
-	"sync"
-	"time"
 )
 
-type MyAdapter struct {
-	pkg.Adapter[*internal.MyExtData]
-}
-
-func (a *MyAdapter) BeforeCreate(c context.Context, task *Task[*internal.MyExtData]) error {
-	log.Println("Rewrite BeforeCreate...")
-	task.Version = 1
-	task.ExtData.TransactionTime = time.Now().UnixNano() / int64(time.Millisecond)
-	return nil
-}
-
-func NewMyAdapter() *MyAdapter {
-	_a := &MyAdapter{}
-	_a.ReBeforeCreate = _a.BeforeCreate
-	return _a
-}
-
-var adapter = NewMyAdapter()
-var adapterInit sync.Once
-
-type MyWorker struct {
-	pkg.Worker[*internal.MyExtData]
-}
-
-func NewMyWorker() *MyWorker {
-	_w := &MyWorker{}
-	return _w
-}
-
-var worker = NewMyWorker()
-var workerInit sync.Once
-
-func init() {
-	adapterInit.Do(func() {
-		adapter.RegisterModel(
-			&internal.MyExtData{},
-			&model.Task{},
-			&model.UniqueRequest{},
-		)
-		adapter.RegisterFSM(internal.PayFsm)
-		adapter.RegisterDB(&db.Factory{})
-		adapter.RegisterMQ(&mq.Factory{})
-		adapter.Config = util.GetConfig()
-		_ = adapter.Init()
-
-	})
-	workerInit.Do(func() {
-		worker.RegisterModel(
-			&internal.MyExtData{},
-			&model.Task{},
-			&model.UniqueRequest{},
-		)
-		worker.RegisterFSM(internal.PayFsm)
-		worker.RegisterDB(&db.Factory{})
-		worker.RegisterMQ(&mq.Factory{})
-		worker.Config = util.GetConfig()
-		worker.Init()
-	})
-}
-
 func Create(c *gin.Context) {
-	task := NewTaskInstance(
+	task := GenTaskInstance(
 		c.Query("request_id"), "",
-		&internal.MyExtData{ExtData: model.ExtData{
+		&MyExtData{ExtData: model.ExtData{
 			Symbol: "BTC", Quantity: 1, Amount: 64000, Operator: "user1", Comment: c.Query("comment"),
 		}},
 	)
 	task.Type = c.Query("type")
 
-	err := adapter.Create(c, task)
-	Response(c, err, task)
+	_response(c, Adapter.Create(c, task), task)
 }
 
 func Query(c *gin.Context) {
-	task := NewTaskInstance(c.Query("request_id"), c.Query("task_id"), &internal.MyExtData{})
-	err := adapter.Query(c, task)
-	Response(c, err, task)
+	task := GenTaskInstance(c.Query("request_id"), c.Query("task_id"), &MyExtData{})
+	_response(c, Adapter.Query(c, task), task)
 }
 
 func Update(c *gin.Context) {
-	task := NewTaskInstance(
+	task := GenTaskInstance(
 		c.Query("request_id"), c.Query("task_id"),
-		&internal.MyExtData{ExtData: model.ExtData{
+		&MyExtData{ExtData: model.ExtData{
 			Symbol: "ETH", Quantity: 2, Amount: 70000, Operator: "", Comment: c.Query("comment"),
 		}},
 	)
@@ -110,12 +41,19 @@ func Update(c *gin.Context) {
 	task.SetSelectColumns([]string{"Quantity", "Operator"})
 	task.SetOmitColumns([]string{"Amount", "Symbol"})
 
-	err := adapter.Update(c, task)
-	Response(c, err, task)
+	_response(c, Adapter.Update(c, task), task)
+}
+
+func _response(c *gin.Context, err error, task interface{}) {
+	if err == nil {
+		c.JSON(http.StatusOK, &task)
+	} else {
+		c.JSON(http.StatusOK, map[string]error{"error": err})
+	}
 }
 
 func main() {
-	worker.Run()
+	Worker.Run()
 	log.Println("worker started...")
 
 	r := gin.Default()
