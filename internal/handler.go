@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"github.com/HEUDavid/go-fsm-demo/internal/pkg"
+	"encoding/json"
 	. "github.com/HEUDavid/go-fsm/pkg/metadata"
 	"log"
 )
@@ -26,7 +26,7 @@ var PayFsm = func() FSM[*MyExtData] {
 }()
 
 func newHandler(task *Task[*MyExtData]) error {
-	log.Printf("State: %s, ExtData: %s", task.State, pkg.Pretty(task.GetExtData()))
+	log.Printf("State: %s, ExtData: %s", task.State, _pretty(task.GetExtData()))
 
 	task.ExtData.Comment = "Modified by newHandler" // Update ExtData
 	task.State = Pay.GetName()                      // Switch to next state
@@ -34,11 +34,16 @@ func newHandler(task *Task[*MyExtData]) error {
 }
 
 func payHandler(task *Task[*MyExtData]) error {
-	log.Printf("State: %s, ExtData: %s", task.State, pkg.Pretty(task.GetExtData()))
+	log.Printf("State: %s, ExtData: %s", task.State, _pretty(task.GetExtData()))
 
 	// Invoke RPC interfaces to perform certain operations
 	// ...
 
 	task.State = End.GetName() // Switch to next state
 	return nil
+}
+
+func _pretty(v interface{}) string {
+	b, _ := json.MarshalIndent(v, "", "  ")
+	return string(b)
 }
