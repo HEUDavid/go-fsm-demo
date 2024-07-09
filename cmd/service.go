@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/HEUDavid/go-fsm-demo/internal"
 	. "github.com/HEUDavid/go-fsm-demo/internal/pkg"
 	"github.com/HEUDavid/go-fsm-demo/model"
@@ -19,24 +18,35 @@ import (
 )
 
 type MyAdapter struct {
-	pkg.Adapter
+	pkg.Adapter[*internal.MyExtData]
 }
 
-func (a *MyAdapter) BeforeCreate(c context.Context, task *Task[ExtDataEntity]) error {
+func (a *MyAdapter) BeforeCreate(c context.Context, task *Task[*internal.MyExtData]) error {
 	log.Println("Rewrite BeforeCreate...")
 	task.Version = 1
-	extData, ok := util.Assert[*internal.MyExtData](task.ExtData)
-	if !ok {
-		return fmt.Errorf("task.ExtData type error")
-	}
-	extData.TransactionTime = time.Now().UnixNano() / int64(time.Millisecond)
+	task.ExtData.TransactionTime = time.Now().UnixNano() / int64(time.Millisecond)
 	return nil
 }
 
-var adapter MyAdapter
+func NewMyAdapter() *MyAdapter {
+	_a := &MyAdapter{}
+	_a.ReBeforeCreate = _a.BeforeCreate
+	return _a
+}
+
+var adapter = NewMyAdapter()
 var adapterInit sync.Once
 
-var worker pkg.Worker
+type MyWorker struct {
+	pkg.Worker[*internal.MyExtData]
+}
+
+func NewMyWorker() *MyWorker {
+	_w := &MyWorker{}
+	return _w
+}
+
+var worker = NewMyWorker()
 var workerInit sync.Once
 
 func init() {
@@ -50,9 +60,8 @@ func init() {
 		adapter.RegisterDB(&db.Factory{})
 		adapter.RegisterMQ(&mq.Factory{})
 		adapter.Config = util.GetConfig()
-		adapter.Init()
+		_ = adapter.Init()
 
-		adapter.IAdapter = &adapter
 	})
 	workerInit.Do(func() {
 		worker.RegisterModel(
@@ -69,7 +78,7 @@ func init() {
 }
 
 func Create(c *gin.Context) {
-	task := GenTaskInstance(
+	task := NewTaskInstance(
 		c.Query("request_id"), "",
 		&internal.MyExtData{ExtData: model.ExtData{
 			Symbol: "BTC", Quantity: 1, Amount: 64000, Operator: "user1", Comment: c.Query("comment"),
@@ -82,13 +91,13 @@ func Create(c *gin.Context) {
 }
 
 func Query(c *gin.Context) {
-	task := GenTaskInstance(c.Query("request_id"), "", &internal.MyExtData{})
+	task := NewTaskInstance(c.Query("request_id"), c.Query("task_id"), &internal.MyExtData{})
 	err := adapter.Query(c, task)
 	Response(c, err, task)
 }
 
 func Update(c *gin.Context) {
-	task := GenTaskInstance(
+	task := NewTaskInstance(
 		c.Query("request_id"), c.Query("task_id"),
 		&internal.MyExtData{ExtData: model.ExtData{
 			Symbol: "ETH", Quantity: 2, Amount: 70000, Operator: "", Comment: c.Query("comment"),
