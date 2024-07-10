@@ -14,13 +14,13 @@ import (
 )
 
 type MyAdapter struct {
-	pkg.Adapter[*MyExtData]
+	pkg.Adapter[*MyData]
 }
 
-func (a *MyAdapter) BeforeCreate(c context.Context, task *Task[*MyExtData]) error {
+func (a *MyAdapter) BeforeCreate(c context.Context, task *Task[*MyData]) error {
 	log.Println("Rewrite BeforeCreate...")
 	task.Version = 1
-	task.ExtData.TransactionTime = time.Now().UnixNano() / int64(time.Millisecond)
+	task.Data.TransactionTime = uint64(time.Now().Unix())
 	return nil
 }
 
@@ -36,11 +36,11 @@ var adapterInit sync.Once
 func init() {
 	adapterInit.Do(func() {
 		Adapter.RegisterModel(
-			&MyExtData{},
+			&MyData{},
 			&model.Task{},
 			&model.UniqueRequest{},
 		)
-		Adapter.RegisterFSM(PayFsm)
+		Adapter.RegisterFSM(PayFSM)
 		Adapter.RegisterDB(&db.Factory{})
 		Adapter.RegisterMQ(&mq.Factory{})
 		Adapter.Config = util.GetConfig()
