@@ -31,10 +31,10 @@ func NewMyAdapter() *MyAdapter {
 }
 
 var Adapter = NewMyAdapter()
-var adapterInit sync.Once
+var _adapterInit sync.Once
 
-func init() {
-	adapterInit.Do(func() {
+func AdapterInit() {
+	_adapterInit.Do(func() {
 		Adapter.RegisterModel(
 			&MyData{},
 			&model.Task{},

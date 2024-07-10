@@ -19,10 +19,10 @@ func NewMyWorker() *MyWorker {
 }
 
 var Worker = NewMyWorker()
-var workerInit sync.Once
+var _workerInit sync.Once
 
-func init() {
-	workerInit.Do(func() {
+func WorkerInit() {
+	_workerInit.Do(func() {
 		Worker.RegisterModel(
 			&MyData{},
 			&model.Task{},

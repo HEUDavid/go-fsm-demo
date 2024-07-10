@@ -49,6 +49,11 @@ func _response(c *gin.Context, err error, task interface{}) {
 	}
 }
 
+func init() {
+	WorkerInit()
+	AdapterInit()
+}
+
 func main() {
 	Worker.Run()
 	log.Println("[FSM] Worker started...")
