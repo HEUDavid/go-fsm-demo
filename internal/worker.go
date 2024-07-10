@@ -10,7 +10,7 @@ import (
 )
 
 type MyWorker struct {
-	pkg.Worker[*MyExtData]
+	pkg.Worker[*MyData]
 }
 
 func NewMyWorker() *MyWorker {
@@ -24,11 +24,11 @@ var workerInit sync.Once
 func init() {
 	workerInit.Do(func() {
 		Worker.RegisterModel(
-			&MyExtData{},
+			&MyData{},
 			&model.Task{},
 			&model.UniqueRequest{},
 		)
-		Worker.RegisterFSM(PayFsm)
+		Worker.RegisterFSM(PayFSM)
 		Worker.RegisterDB(&db.Factory{})
 		Worker.RegisterMQ(&mq.Factory{})
 		Worker.Config = util.GetConfig()
