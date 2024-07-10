@@ -13,33 +13,30 @@ import (
 func Create(c *gin.Context) {
 	task := GenTaskInstance(
 		c.Query("request_id"), "",
-		&MyExtData{ExtData: model.ExtData{
+		&MyData{Data: model.Data{
 			Symbol: "BTC", Quantity: 1, Amount: 64000, Operator: "user1", Comment: c.Query("comment"),
-		}},
-	)
+		}})
 	task.Type = c.Query("type")
-
 	_response(c, Adapter.Create(c, task), task)
 }
 
 func Query(c *gin.Context) {
-	task := GenTaskInstance(c.Query("request_id"), c.Query("task_id"), &MyExtData{})
+	task := GenTaskInstance(c.Query("request_id"), c.Query("task_id"), &MyData{})
 	_response(c, Adapter.Query(c, task), task)
 }
 
 func Update(c *gin.Context) {
 	task := GenTaskInstance(
 		c.Query("request_id"), c.Query("task_id"),
-		&MyExtData{ExtData: model.ExtData{
-			Symbol: "ETH", Quantity: 2, Amount: 70000, Operator: "", Comment: c.Query("comment"),
-		}},
-	)
+		&MyData{Data: model.Data{
+			Symbol: "ETH", Quantity: -2, Amount: -6000, Operator: "", Comment: c.Query("comment"),
+		}})
 	task.Type = c.Query("type")
 	task.State = "End"
 	task.Version, _ = strconv.Atoi(c.Query("version"))
 
-	task.SetSelectColumns([]string{"Quantity", "Operator"})
-	task.SetOmitColumns([]string{"Amount", "Symbol"})
+	task.SetSelectColumns([]string{"Operator"})
+	task.SetOmitColumns([]string{"Symbol", "Quantity"})
 
 	_response(c, Adapter.Update(c, task), task)
 }
