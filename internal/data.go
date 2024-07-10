@@ -4,10 +4,10 @@ import (
 	"github.com/HEUDavid/go-fsm-demo/model"
 )
 
-type MyExtData struct {
-	model.ExtData
+type MyData struct {
+	model.Data
 }
 
-func (d *MyExtData) SetTaskID(taskID string) {
+func (d *MyData) SetTaskID(taskID string) {
 	d.TaskID = taskID
 }
