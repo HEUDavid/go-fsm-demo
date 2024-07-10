@@ -34,7 +34,7 @@ CREATE TABLE `data`
 (
     `id`               bigint(20) unsigned NOT NULL AUTO_INCREMENT,
     `task_id`          char(32)            NOT NULL,
-    -- 以下是业务字段
+    -- 以下是业务字段，例如
     `symbol`           varchar(20)         NOT NULL DEFAULT '',
     `quantity`         decimal(50, 15)     NOT NULL DEFAULT 0.000000000000000,
     `amount`           decimal(50, 15)     NOT NULL DEFAULT 0.000000000000000,
