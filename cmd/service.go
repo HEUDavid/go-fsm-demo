@@ -14,7 +14,7 @@ func Create(c *gin.Context) {
 	task := GenTaskInstance(
 		c.Query("request_id"), "",
 		&MyData{Data: model.Data{
-			Symbol: "BTC", Quantity: 1, Amount: 64000, Operator: "user1", Comment: c.Query("comment"),
+			Symbol: "BTC", Quantity: 1, Amount: 64000, Operator: "user", Comment: c.Query("comment"),
 		}})
 	task.Type = c.Query("type")
 	_response(c, Adapter.Create(c, task), task)
