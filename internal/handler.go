@@ -26,7 +26,7 @@ var PayFSM = func() FSM[*MyData] {
 }()
 
 func newHandler(task *Task[*MyData]) error {
-	log.Printf("State: %s, Data: %s", task.State, _pretty(task.GetData()))
+	log.Printf("[FSM] State: %s, Data: %s", task.State, _pretty(task.GetData()))
 
 	// It may be necessary to perform some checks.
 	// It may be necessary to pre-record the request to the database to ensure idempotency.
@@ -39,7 +39,7 @@ func newHandler(task *Task[*MyData]) error {
 }
 
 func payHandler(task *Task[*MyData]) error {
-	log.Printf("State: %s, Data: %s", task.State, _pretty(task.GetData()))
+	log.Printf("[FSM] State: %s, Task: %s", task.State, _pretty(task))
 
 	// Invoke RPC interfaces to perform certain operations.
 	// ...

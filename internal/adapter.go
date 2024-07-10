@@ -18,7 +18,7 @@ type MyAdapter struct {
 }
 
 func (a *MyAdapter) BeforeCreate(c context.Context, task *Task[*MyData]) error {
-	log.Println("Rewrite BeforeCreate...")
+	log.Println("[FSM] Rewrite BeforeCreate...")
 	task.Version = 1
 	task.Data.TransactionTime = uint64(time.Now().Unix())
 	return nil

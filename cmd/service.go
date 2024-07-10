@@ -51,8 +51,9 @@ func _response(c *gin.Context, err error, task interface{}) {
 
 func main() {
 	Worker.Run()
-	log.Println("Worker started...")
+	log.Println("[FSM] Worker started...")
 
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.GET("/create", Create)
 	r.GET("/query", Query)
