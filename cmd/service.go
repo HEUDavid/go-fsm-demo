@@ -20,11 +20,6 @@ func Create(c *gin.Context) {
 	_response(c, Adapter.Create(c, task), task)
 }
 
-func Query(c *gin.Context) {
-	task := GenTaskInstance(c.Query("request_id"), c.Query("task_id"), &MyData{})
-	_response(c, Adapter.Query(c, task), task)
-}
-
 func Update(c *gin.Context) {
 	task := GenTaskInstance(
 		c.Query("request_id"), c.Query("task_id"),
@@ -39,6 +34,11 @@ func Update(c *gin.Context) {
 	task.SetOmitColumns([]string{"Symbol", "Quantity"})
 
 	_response(c, Adapter.Update(c, task), task)
+}
+
+func Query(c *gin.Context) {
+	task := GenTaskInstance(c.Query("request_id"), c.Query("task_id"), &MyData{})
+	_response(c, Adapter.Query(c, task), task)
 }
 
 func _response(c *gin.Context, err error, task interface{}) {
@@ -61,7 +61,7 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.GET("/create", Create)
-	r.GET("/query", Query)
 	r.GET("/update", Update)
+	r.GET("/query", Query)
 	_ = r.Run("127.0.0.1:8080")
 }
