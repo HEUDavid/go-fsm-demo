@@ -44,8 +44,8 @@ func payHandler(task *Task[*MyData]) error {
 	// Invoke RPC interfaces to perform certain operations.
 	// ...
 
-	task.Data.Operator = "system"
-	task.State = End.GetName() // Switch to next state
+	task.Data.Operator = "system" // Update Data
+	task.State = End.GetName()    // Switch to next state
 	return nil
 }
 
