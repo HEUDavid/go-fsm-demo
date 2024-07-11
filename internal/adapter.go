@@ -31,18 +31,18 @@ func NewMyAdapter() *MyAdapter {
 }
 
 var Adapter = NewMyAdapter()
-var _adapterInit sync.Once
+var _initAdapter sync.Once
 
-func AdapterInit() {
-	_adapterInit.Do(func() {
+func InitAdapter() {
+	_initAdapter.Do(func() {
 		Adapter.RegisterModel(
 			&MyData{},
 			&model.Task{},
 			&model.UniqueRequest{},
 		)
 		Adapter.RegisterFSM(PayFSM)
-		Adapter.RegisterDB(&db.Factory{})
-		Adapter.RegisterMQ(&mq.Factory{})
+		Adapter.RegisterDB(&db.Factory{Section: "mysql"})
+		Adapter.RegisterMQ(&mq.Factory{Section: "rmq"})
 		Adapter.Config = util.GetConfig()
 		_ = Adapter.Init()
 	})

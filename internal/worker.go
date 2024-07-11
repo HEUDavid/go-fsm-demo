@@ -19,18 +19,18 @@ func NewMyWorker() *MyWorker {
 }
 
 var Worker = NewMyWorker()
-var _workerInit sync.Once
+var _initWorker sync.Once
 
-func WorkerInit() {
-	_workerInit.Do(func() {
+func InitWorker() {
+	_initWorker.Do(func() {
 		Worker.RegisterModel(
 			&MyData{},
 			&model.Task{},
 			&model.UniqueRequest{},
 		)
 		Worker.RegisterFSM(PayFSM)
-		Worker.RegisterDB(&db.Factory{})
-		Worker.RegisterMQ(&mq.Factory{})
+		Worker.RegisterDB(&db.Factory{Section: "mysql"})
+		Worker.RegisterMQ(&mq.Factory{Section: "rmq"})
 		Worker.Config = util.GetConfig()
 		Worker.Init()
 	})
