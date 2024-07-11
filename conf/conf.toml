@@ -1,4 +1,4 @@
-[mysql]
+[mysql_free]
 user = "2gmaGF7uE9QHnKq.root"
 password = "Yu60VkzGkybKxFQB"
 host = "gateway01.ap-northeast-1.prod.aws.tidbcloud.com"
@@ -7,6 +7,17 @@ dbName = "test"
 maxIdleConns = 10
 maxOpenConns = 100
 tls = true
+
+
+[mysql]
+user = "fsm_user"
+password = "123456"
+host = "database-1.cfueiq0405rj.ap-northeast-1.rds.amazonaws.com"
+port = 3306
+dbName = "fsm"
+maxIdleConns = 10
+maxOpenConns = 100
+tls = false
 
 
 [rmq]
