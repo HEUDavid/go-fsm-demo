@@ -29,7 +29,7 @@ func Update(c *gin.Context) {
 	task.Type = c.Query("type")
 	task.State = "End"
 	version, _ := strconv.ParseUint(c.Query("version"), 10, 64)
-	task.Version = uint32(version)
+	task.Version = uint(version)
 	task.SetSelectColumns([]string{"Operator"})
 	task.SetOmitColumns([]string{"Symbol", "Quantity"})
 
