@@ -35,7 +35,6 @@ func Update(c *gin.Context) {
 	task.State = "End"
 	version, _ := strconv.ParseUint(c.Query("version"), 10, 64)
 	task.Version = uint32(version)
-
 	task.SetSelectColumns([]string{"Operator"})
 	task.SetOmitColumns([]string{"Symbol", "Quantity"})
 
@@ -51,8 +50,8 @@ func _response(c *gin.Context, err error, task interface{}) {
 }
 
 func init() {
-	WorkerInit()
-	AdapterInit()
+	InitWorker()
+	InitAdapter()
 }
 
 func main() {
