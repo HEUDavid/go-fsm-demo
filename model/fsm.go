@@ -8,6 +8,7 @@ import (
 type Data struct {
 	ID              uint64  `gorm:"autoIncrement:true;primaryKey;column:id;type:bigint unsigned;not null"`
 	TaskID          string  `gorm:"index:idx_task_id;column:task_id;type:char(32);not null"`
+	UID             uint64  `gorm:"column:uid;type:bigint unsigned;not null;default:0"`
 	Symbol          string  `gorm:"column:symbol;type:varchar(20);not null;default:''"`
 	Quantity        float64 `gorm:"column:quantity;type:decimal(50,15);not null;default:0.000000000000000"`
 	Amount          float64 `gorm:"column:amount;type:decimal(50,15);not null;default:0.000000000000000"`

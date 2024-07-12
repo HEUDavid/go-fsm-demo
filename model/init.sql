@@ -37,6 +37,7 @@ create table data
     id               bigint unsigned auto_increment
         primary key,
     task_id          char(32)                                  not null,
+    uid              bigint unsigned default 0                 not null,
     symbol           varchar(20)     default ''                not null,
     quantity         decimal(50, 15) default 0.000000000000000 not null,
     amount           decimal(50, 15) default 0.000000000000000 not null,
