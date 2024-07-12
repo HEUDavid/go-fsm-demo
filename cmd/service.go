@@ -16,6 +16,7 @@ func Create(c *gin.Context) {
 		&MyData{Data: model.Data{
 			Symbol: "BTC", Quantity: 1, Amount: 64000, Operator: "user", Comment: c.Query("comment"),
 		}})
+	task.Data.UID = 10001
 	task.Type = c.Query("type")
 	_response(c, Adapter.Create(c, task), task)
 }
