@@ -41,6 +41,7 @@ func InitAdapter() {
 			&model.UniqueRequest{},
 		)
 		Adapter.RegisterFSM(PayFSM)
+		Adapter.RegisterGenerator(util.UniqueID)
 		Adapter.RegisterDB(&db.Factory{Section: "mysql"})
 		Adapter.RegisterMQ(&mq.Factory{Section: "rmq"})
 		Adapter.Config = util.GetConfig()

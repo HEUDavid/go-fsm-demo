@@ -29,6 +29,7 @@ func InitWorker() {
 			&model.UniqueRequest{},
 		)
 		Worker.RegisterFSM(PayFSM)
+		Worker.RegisterGenerator(util.UniqueID)
 		Worker.RegisterDB(&db.Factory{Section: "mysql"})
 		Worker.RegisterMQ(&mq.Factory{Section: "rmq"})
 		Worker.Config = util.GetConfig()
