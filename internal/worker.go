@@ -15,6 +15,7 @@ type MyWorker struct {
 
 func NewMyWorker() *MyWorker {
 	w := &MyWorker{}
+	w.MaxGoroutines = 50
 	return w
 }
 
