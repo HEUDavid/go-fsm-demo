@@ -8,6 +8,6 @@ type MyData struct {
 	model.Data
 }
 
-func (d *MyData) SetTaskID(taskID string) {
-	d.TaskID = taskID
+func (m *MyData) SetTaskID(taskID string) {
+	m.TaskID = taskID
 }
