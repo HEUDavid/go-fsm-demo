@@ -3,11 +3,9 @@ module github.com/HEUDavid/go-fsm-demo
 go 1.22
 
 require (
-	github.com/HEUDavid/go-fsm v0.0.0-20240726105855-45a615bc92f9
+	github.com/HEUDavid/go-fsm v0.0.1
 	github.com/gin-gonic/gin v1.10.0
 )
-
-replace github.com/HEUDavid/go-fsm => /Users/xiang/workspace/goland/lib/go-fsm
 
 require (
 	cdr.dev/slog v1.4.2-0.20221206192828-e4803b10ae17 // indirect
