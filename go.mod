@@ -1,9 +1,9 @@
 module github.com/HEUDavid/go-fsm-demo
 
-go 1.23
+go 1.22
 
 require (
-	github.com/HEUDavid/go-fsm v0.0.0-20240710133807-e70fdf86fd83
+	github.com/HEUDavid/go-fsm v0.0.0-20240726105855-45a615bc92f9
 	github.com/gin-gonic/gin v1.10.0
 )
 
@@ -56,8 +56,8 @@ require (
 	go.opencensus.io v0.24.0 // indirect
 	golang.org/x/arch v0.8.0 // indirect
 	golang.org/x/crypto v0.25.0 // indirect
-	golang.org/x/exp v0.0.0-20240707233637-46b078467d37 // indirect
-	golang.org/x/image v0.18.0 // indirect
+	golang.org/x/exp v0.0.0-20231127185646-65229373498e // indirect
+	golang.org/x/image v0.14.0 // indirect
 	golang.org/x/net v0.27.0 // indirect
 	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/term v0.22.0 // indirect
