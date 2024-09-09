@@ -19,7 +19,7 @@ var (
 )
 
 var PayFSM = func() FSM[*MyData] {
-	fsm := GenFSM("PayFSM", New)
+	fsm := GenFSM[*MyData]("PayFSM")
 	fsm.RegisterState(New, Pay, End)
 	fsm.RegisterTransition(New2Pay, Pay2End, End2End)
 	return fsm
