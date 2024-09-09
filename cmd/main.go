@@ -18,6 +18,7 @@ func Create(c *gin.Context) {
 		}})
 	task.Data.UID = 10001
 	task.Type = c.Query("type")
+	task.State = New.GetName()
 	_response(c, Adapter.Create(c, task), task)
 }
 
