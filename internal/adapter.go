@@ -40,7 +40,7 @@ func InitAdapter() {
 			&model.Task{},
 			&model.UniqueRequest{},
 		)
-		Adapter.RegisterFSM(PayFSM)
+		Adapter.RegisterFSM(ReceiptFsm)
 		Adapter.RegisterGenerator(util.UniqueID)
 		Adapter.RegisterDB(&db.Factory{Section: "mysql_public"})
 		Adapter.RegisterMQ(&mq.Factory{Section: "rmq_public"})
