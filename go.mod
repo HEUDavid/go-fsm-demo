@@ -7,6 +7,8 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 )
 
+replace github.com/HEUDavid/go-fsm => github.com/HEUDavid/go-fsm v0.0.2-0.20240909185203-a8697c326a7a
+
 require (
 	cdr.dev/slog v1.4.2-0.20221206192828-e4803b10ae17 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
