@@ -1,0 +1,97 @@
+name: Go Cross-Platform Build and Release
+
+permissions:
+  contents: write  # Ensure permission to write to release
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [ linux, windows, darwin ]  # Supported OS
+        goarch: [ amd64, arm64 ]          # Supported architectures
+    steps:
+      - uses: actions/checkout@v4  # Checkout code
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.22'  # Set Go version
+
+      - name: Build and Package
+        run: |
+          NAME="go-fsm"
+
+          BINARY_NAME="${NAME}-${{ matrix.goos }}-${{ matrix.goarch }}"
+          if [ "${{ matrix.goos }}" == "windows" ]; then
+            BINARY_NAME="${BINARY_NAME}.exe"
+          fi
+
+          # Build the binary
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -v -o ${BINARY_NAME} ./cmd
+
+          # Create a directory for packaging
+          mkdir -p release-package
+
+          # Copy binary, conf, go.mod
+          cp ${BINARY_NAME} release-package/
+          cp -r conf release-package/
+          cp go.mod release-package/
+
+          # Package the files
+          if [ "${{ matrix.goos }}" == "windows" ]; then
+            zip -r ${BINARY_NAME}.zip release-package
+          else
+            tar -czf ${BINARY_NAME}.tar.gz -C release-package .
+          fi
+
+          # Set execute permissions for Unix-like systems
+          if [ "${{ matrix.goos }}" != "windows" ]; then
+            chmod +x release-package/${BINARY_NAME}
+          fi
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-packages
+          path: |
+            *.zip
+            *.tar.gz
+
+  create_release:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'  # Only run on push to main
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for all tags and branches
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: release-packages
+
+      - name: Create Release
+        id: create_release
+        run: |
+          TAG_NAME=$(date +'v%Y.%m.%d-%H%M%S')
+          echo "Creating release $TAG_NAME"
+          RELEASE_NOTES="## go-fsm
+
+          Release $TAG_NAME
+
+          Instructions: https://github.com/HEUDavid/go-fsm"
+
+          gh release create $TAG_NAME *.zip *.tar.gz \
+            --title "Release $TAG_NAME" \
+            --notes "$RELEASE_NOTES" \
+            --draft=false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
