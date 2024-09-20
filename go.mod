@@ -3,7 +3,7 @@ module github.com/HEUDavid/go-fsm-demo
 go 1.22
 
 require (
-	github.com/HEUDavid/go-fsm v0.0.2-0.20240909185758-6553a00a1a9a
+	github.com/HEUDavid/go-fsm v0.0.2
 	github.com/gin-gonic/gin v1.10.0
 )
 
