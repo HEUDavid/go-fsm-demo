@@ -13,13 +13,13 @@ type ServiceWorker struct {
 	pkg.Worker[*MyData]
 }
 
-func NewMyWorker() *ServiceWorker {
+func NewWorker() *ServiceWorker {
 	w := &ServiceWorker{}
 	w.MaxGoroutines = 50
 	return w
 }
 
-var Worker = NewMyWorker()
+var Worker = NewWorker()
 var _initWorker sync.Once
 
 func InitWorker() {
