@@ -24,13 +24,13 @@ func (a *ServiceAdapter) BeforeCreate(c context.Context, task *Task[*MyData]) er
 	return nil
 }
 
-func NewMyAdapter() *ServiceAdapter {
+func NewAdapter() *ServiceAdapter {
 	a := &ServiceAdapter{}
 	a.ReBeforeCreate = a.BeforeCreate
 	return a
 }
 
-var Adapter = NewMyAdapter()
+var Adapter = NewAdapter()
 var _initAdapter sync.Once
 
 func InitAdapter() {
