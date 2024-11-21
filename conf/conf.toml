@@ -4,8 +4,8 @@ password = "Yu60VkzGkybKxFQB"
 host = "gateway01.ap-northeast-1.prod.aws.tidbcloud.com"
 port = 4000
 dbName = "test"
-maxIdleConns = 10
-maxOpenConns = 100
+maxIdleConns = 5
+maxOpenConns = 20
 tls = true
 
 
