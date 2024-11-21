@@ -13,19 +13,19 @@ import (
 	"time"
 )
 
-type MyAdapter struct {
+type ServiceAdapter struct {
 	pkg.Adapter[*MyData]
 }
 
-func (a *MyAdapter) BeforeCreate(c context.Context, task *Task[*MyData]) error {
+func (a *ServiceAdapter) BeforeCreate(c context.Context, task *Task[*MyData]) error {
 	log.Println("[FSM] Rewrite BeforeCreate...")
 	task.Version = 1
 	task.Data.TransactionTime = uint64(time.Now().Unix())
 	return nil
 }
 
-func NewMyAdapter() *MyAdapter {
-	a := &MyAdapter{}
+func NewMyAdapter() *ServiceAdapter {
+	a := &ServiceAdapter{}
 	a.ReBeforeCreate = a.BeforeCreate
 	return a
 }

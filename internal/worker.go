@@ -9,12 +9,12 @@ import (
 	"sync"
 )
 
-type MyWorker struct {
+type ServiceWorker struct {
 	pkg.Worker[*MyData]
 }
 
-func NewMyWorker() *MyWorker {
-	w := &MyWorker{}
+func NewMyWorker() *ServiceWorker {
+	w := &ServiceWorker{}
 	w.MaxGoroutines = 50
 	return w
 }
