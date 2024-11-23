@@ -18,26 +18,26 @@ type ServiceAdapter struct {
 	__init__ sync.Once
 }
 
-func (a *ServiceAdapter) BeforeCreate(c context.Context, task *Task[*MyData]) error {
+func (s *ServiceAdapter) BeforeCreate(c context.Context, task *Task[*MyData]) error {
 	log.Println("[FSM] Rewrite BeforeCreate...")
 	task.Version = 1
 	task.Data.TransactionTime = uint64(time.Now().Unix())
 	return nil
 }
 
-func (a *ServiceAdapter) DoInit() {
-	a.__init__.Do(func() {
-		a.RegisterModel(
+func (s *ServiceAdapter) DoInit() {
+	s.__init__.Do(func() {
+		s.RegisterModel(
 			&MyData{},
 			&model.Task{},
 			&model.UniqueRequest{},
 		)
-		a.RegisterFSM(PayFSM)
-		a.RegisterGenerator(util.UniqueID)
-		a.RegisterDB(&db.Factory{Section: "mysql_public"})
-		a.RegisterMQ(&mq.Factory{Section: "rmq_public"})
-		a.Config = util.GetConfig()
-		_ = a.Init()
+		s.RegisterFSM(PayFSM)
+		s.RegisterGenerator(util.UniqueID)
+		s.RegisterDB(&db.Factory{Section: "mysql_public"})
+		s.RegisterMQ(&mq.Factory{Section: "rmq_public"})
+		s.Config = util.GetConfig()
+		_ = s.Init()
 	})
 }
 
