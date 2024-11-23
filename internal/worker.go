@@ -11,29 +11,27 @@ import (
 
 type ServiceWorker struct {
 	pkg.Worker[*MyData]
+	__init__ sync.Once
+}
+
+func (w *ServiceWorker) DoInit() {
+	w.__init__.Do(func() {
+		w.RegisterModel(
+			&MyData{},
+			&model.Task{},
+			&model.UniqueRequest{},
+		)
+		w.RegisterFSM(PayFSM)
+		w.RegisterGenerator(util.UniqueID)
+		w.RegisterDB(&db.Factory{Section: "mysql_public"})
+		w.RegisterMQ(&mq.Factory{Section: "rmq_public"})
+		w.Config = util.GetConfig()
+		w.Init()
+	})
 }
 
 func NewWorker() *ServiceWorker {
 	w := &ServiceWorker{}
 	w.MaxGoroutines = 50
 	return w
-}
-
-var Worker = NewWorker()
-var _initWorker sync.Once
-
-func InitWorker() {
-	_initWorker.Do(func() {
-		Worker.RegisterModel(
-			&MyData{},
-			&model.Task{},
-			&model.UniqueRequest{},
-		)
-		Worker.RegisterFSM(PayFSM)
-		Worker.RegisterGenerator(util.UniqueID)
-		Worker.RegisterDB(&db.Factory{Section: "mysql_public"})
-		Worker.RegisterMQ(&mq.Factory{Section: "rmq_public"})
-		Worker.Config = util.GetConfig()
-		Worker.Init()
-	})
 }
