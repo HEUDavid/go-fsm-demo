@@ -37,7 +37,7 @@ func (s *ServiceAdapter) DoInit() {
 		s.RegisterDB(&db.Factory{Section: "mysql_public"})
 		s.RegisterMQ(&mq.Factory{Section: "rmq_public"})
 		s.Config = util.GetConfig()
-		_ = s.Init()
+		s.Init()
 	})
 }
 
