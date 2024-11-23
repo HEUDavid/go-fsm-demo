@@ -13,16 +13,41 @@ import (
 	"time"
 )
 
-type ServiceAdapter struct {
-	pkg.Adapter[*MyData]
-	__init__ sync.Once
+type IService interface{ DoInit() }
+type Service struct{ __init__ sync.Once }
+
+func (s *Service) DoInit() { panic("not implemented") }
+
+type ServiceWorker struct {
+	Service
+	pkg.Worker[*MyData]
 }
 
-func (s *ServiceAdapter) BeforeCreate(c context.Context, task *Task[*MyData]) error {
-	log.Println("[FSM] Rewrite BeforeCreate...")
-	task.Version = 1
-	task.Data.TransactionTime = uint64(time.Now().Unix())
-	return nil
+func (s *ServiceWorker) DoInit() {
+	s.__init__.Do(func() {
+		s.RegisterModel(
+			&MyData{},
+			&model.Task{},
+			&model.UniqueRequest{},
+		)
+		s.RegisterFSM(PayFSM)
+		s.RegisterGenerator(util.UniqueID)
+		s.RegisterDB(&db.Factory{Section: "mysql_public"})
+		s.RegisterMQ(&mq.Factory{Section: "rmq_public"})
+		s.Config = util.GetConfig()
+		s.Init()
+	})
+}
+
+func NewWorker() *ServiceWorker {
+	w := &ServiceWorker{}
+	w.MaxGoroutines = 50
+	return w
+}
+
+type ServiceAdapter struct {
+	Service
+	pkg.Adapter[*MyData]
 }
 
 func (s *ServiceAdapter) DoInit() {
@@ -39,6 +64,13 @@ func (s *ServiceAdapter) DoInit() {
 		s.Config = util.GetConfig()
 		_ = s.Init()
 	})
+}
+
+func (s *ServiceAdapter) BeforeCreate(c context.Context, task *Task[*MyData]) error {
+	log.Println("[FSM] Rewrite BeforeCreate...")
+	task.Version = 1
+	task.Data.TransactionTime = uint64(time.Now().Unix())
+	return nil
 }
 
 func NewAdapter() *ServiceAdapter {
