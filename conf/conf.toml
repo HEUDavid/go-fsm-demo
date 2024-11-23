@@ -1,4 +1,4 @@
-[mysql_public]
+[mysql]
 user = "2gmaGF7uE9QHnKq.root"
 password = "Yu60VkzGkybKxFQB"
 host = "gateway01.ap-northeast-1.prod.aws.tidbcloud.com"
@@ -9,7 +9,7 @@ maxOpenConns = 200
 tls = true
 
 
-[rmq_public]
+[rmq]
 user = "psnbxfjg"
 password = "fmCsjm2o0vcVyFywgR6as3WqBwiuATLN"
 host = "cougar.rmq.cloudamqp.com"
