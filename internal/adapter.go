@@ -15,6 +15,7 @@ import (
 
 type ServiceAdapter struct {
 	pkg.Adapter[*MyData]
+	__init__ sync.Once
 }
 
 func (a *ServiceAdapter) BeforeCreate(c context.Context, task *Task[*MyData]) error {
@@ -24,27 +25,24 @@ func (a *ServiceAdapter) BeforeCreate(c context.Context, task *Task[*MyData]) er
 	return nil
 }
 
-func NewAdapter() *ServiceAdapter {
-	a := &ServiceAdapter{}
-	a.ReBeforeCreate = a.BeforeCreate
-	return a
-}
-
-var Adapter = NewAdapter()
-var _initAdapter sync.Once
-
-func InitAdapter() {
-	_initAdapter.Do(func() {
-		Adapter.RegisterModel(
+func (a *ServiceAdapter) DoInit() {
+	a.__init__.Do(func() {
+		a.RegisterModel(
 			&MyData{},
 			&model.Task{},
 			&model.UniqueRequest{},
 		)
-		Adapter.RegisterFSM(PayFSM)
-		Adapter.RegisterGenerator(util.UniqueID)
-		Adapter.RegisterDB(&db.Factory{Section: "mysql_public"})
-		Adapter.RegisterMQ(&mq.Factory{Section: "rmq_public"})
-		Adapter.Config = util.GetConfig()
-		_ = Adapter.Init()
+		a.RegisterFSM(PayFSM)
+		a.RegisterGenerator(util.UniqueID)
+		a.RegisterDB(&db.Factory{Section: "mysql_public"})
+		a.RegisterMQ(&mq.Factory{Section: "rmq_public"})
+		a.Config = util.GetConfig()
+		_ = a.Init()
 	})
+}
+
+func NewAdapter() *ServiceAdapter {
+	a := &ServiceAdapter{}
+	a.ReBeforeCreate = a.BeforeCreate
+	return a
 }
