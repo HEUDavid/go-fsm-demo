@@ -14,19 +14,19 @@ type ServiceWorker struct {
 	__init__ sync.Once
 }
 
-func (w *ServiceWorker) DoInit() {
-	w.__init__.Do(func() {
-		w.RegisterModel(
+func (s *ServiceWorker) DoInit() {
+	s.__init__.Do(func() {
+		s.RegisterModel(
 			&MyData{},
 			&model.Task{},
 			&model.UniqueRequest{},
 		)
-		w.RegisterFSM(PayFSM)
-		w.RegisterGenerator(util.UniqueID)
-		w.RegisterDB(&db.Factory{Section: "mysql_public"})
-		w.RegisterMQ(&mq.Factory{Section: "rmq_public"})
-		w.Config = util.GetConfig()
-		w.Init()
+		s.RegisterFSM(PayFSM)
+		s.RegisterGenerator(util.UniqueID)
+		s.RegisterDB(&db.Factory{Section: "mysql_public"})
+		s.RegisterMQ(&mq.Factory{Section: "rmq_public"})
+		s.Config = util.GetConfig()
+		s.Init()
 	})
 }
 
