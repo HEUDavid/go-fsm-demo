@@ -51,9 +51,14 @@ func _response(c *gin.Context, err error, task interface{}) {
 	}
 }
 
+var (
+	Worker  = NewWorker()
+	Adapter = NewAdapter()
+)
+
 func init() {
-	InitWorker()
-	InitAdapter()
+	Worker.DoInit()
+	Adapter.DoInit()
 }
 
 func main() {
