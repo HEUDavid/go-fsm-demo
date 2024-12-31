@@ -1,12 +1,17 @@
 package main
 
 import (
+	"fmt"
 	. "github.com/HEUDavid/go-fsm-demo/internal"
 	"github.com/HEUDavid/go-fsm-demo/model"
 	. "github.com/HEUDavid/go-fsm/pkg/metadata"
+	"github.com/HEUDavid/go-fsm/pkg/util"
 	"github.com/gin-gonic/gin"
+	"io"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strconv"
 )
 
@@ -56,7 +61,29 @@ var (
 	Adapter = NewAdapter()
 )
 
+func setupLog() {
+	logPath := filepath.Join(util.FindProjectRoot(), "log/water.log")
+
+	if err := os.MkdirAll(filepath.Dir(logPath), os.ModePerm); err != nil {
+		panic(fmt.Sprintf("Failed to create log directory: %v", err))
+	}
+
+	f, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	if err != nil {
+		panic(fmt.Sprintf("Failed to open or create log file: %v", err))
+	}
+
+	mw := io.MultiWriter(os.Stdout, f)
+	gin.DefaultWriter = mw
+	log.SetOutput(mw)
+
+	log.SetPrefix("[FSM-DEMO] ")
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+}
+
 func init() {
+	setupLog()
+
 	Worker.DoInit()
 	Adapter.DoInit()
 }
