@@ -67,7 +67,7 @@ func (s *ServiceAdapter) DoInit() {
 }
 
 func (s *ServiceAdapter) BeforeCreate(c context.Context, task *Task[*MyData]) error {
-	log.Println("[FSM] Rewrite BeforeCreate...")
+	log.Println("[FSM-DEMO] Rewrite BeforeCreate...")
 	task.Version = 1
 	task.Data.TransactionTime = uint64(time.Now().Unix())
 	return nil
