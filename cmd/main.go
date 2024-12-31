@@ -63,7 +63,7 @@ func init() {
 
 func main() {
 	Worker.Run()
-	log.Println("[FSM] Worker started...")
+	log.Println("[FSM] worker started...")
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
