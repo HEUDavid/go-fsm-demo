@@ -42,6 +42,7 @@ func (s *ServiceWorker) DoInit() {
 func NewWorker() *ServiceWorker {
 	w := &ServiceWorker{}
 	w.MaxGoroutines = 50
+	w.DEBUG = true
 	return w
 }
 
