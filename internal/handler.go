@@ -1,9 +1,7 @@
 package internal
 
 import (
-	"encoding/json"
 	. "github.com/HEUDavid/go-fsm/pkg/metadata"
-	"log"
 )
 
 var (
@@ -26,8 +24,6 @@ var PayFSM = func() FSM[*MyData] {
 }()
 
 func newHandler(task *Task[*MyData]) error {
-	log.Printf("[FSM] State: %s, Task.Data: %s", task.State, _pretty(task.GetData()))
-
 	// It may be necessary to perform some checks.
 	// It may be necessary to pre-record the request to the database to ensure idempotency.
 	// For example, generating some request IDs.
@@ -39,17 +35,11 @@ func newHandler(task *Task[*MyData]) error {
 }
 
 func payHandler(task *Task[*MyData]) error {
-	log.Printf("[FSM] State: %s, Task: %s", task.State, _pretty(task))
-
 	// Invoke RPC interfaces to perform certain operations.
 	// ...
 
+	task.Data.Comment = "Modified by payHandler"
 	task.Data.Operator = "system" // Update Data
 	task.State = End.GetName()    // Switch to next state
 	return nil
-}
-
-func _pretty(v interface{}) string {
-	s, _ := json.MarshalIndent(v, "", "  ")
-	return string(s)
 }
